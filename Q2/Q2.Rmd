@@ -1,0 +1,14 @@
+---
+title: "Devoir STT"
+author: "Tahar AMAIRI"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r}
+library("bnlearn")
+data(marks)
+```
+
