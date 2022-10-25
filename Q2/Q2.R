@@ -93,12 +93,68 @@ L = function(Xi, P)
 }
 
 # 3)
+maxVraisemblance = function(notesReussite)
+{
+  n = nrow(notesReussite)
+  res = matrix(0, nrow = 13, ncol = 2)
+  
+  for(i in 1:n)
+  {
+    Xi = unlist(notesReussite[i,], use.names = FALSE)
+    
+    res[1,1] = res[1,1] + Xi[5]
+    res[1,2] = res[1,2] + (1-Xi[5])
+    
+    res[2,1] = res[2,1] + Xi[4]*Xi[5]
+    res[2,2] = res[2,2] + (1-Xi[4])*Xi[5]
+    
+    res[3,1] = res[3,1] + Xi[4]*(1-Xi[5])
+    res[3,2] = res[3,2] + (1-Xi[4])*(1-Xi[5])
+    
+    res[4,1] = res[4,1] + Xi[3]*Xi[4]*Xi[5]
+    res[4,2] = res[4,2] + (1-Xi[3])*Xi[4]*Xi[5]
+    
+    res[5,1] = res[5,1] + Xi[3]*(1-Xi[4])*Xi[5]
+    res[5,2] = res[5,2] + (1-Xi[3])*(1-Xi[4])*Xi[5]
+    
+    res[6,1] = res[6,1] + Xi[3]*Xi[4]*(1-Xi[5])
+    res[6,2] = res[6,2] + (1-Xi[3])*Xi[4]*(1-Xi[5])
+    
+    res[7,1] = res[7,1] + Xi[3]*(1-Xi[4])*(1-Xi[5])
+    res[7,2] = res[7,2] + (1-Xi[3])*(1-Xi[4])*(1-Xi[5])
+    
+    res[8,1] = res[8,1] + Xi[2]*Xi[3]
+    res[8,2] = res[8,2] + (1-Xi[2])*Xi[3]
+    
+    res[9,1] = res[9,1] + Xi[2]*(1-Xi[3])
+    res[9,2] = res[9,2] + (1-Xi[2])*(1-Xi[3])
+    
+    res[10,1] = res[10,1] + Xi[1]*Xi[2]*Xi[3]
+    res[10,2] = res[10,2] + (1-Xi[1])*Xi[2]*Xi[3]
+    
+    res[11,1] = res[11,1] + Xi[1]*(1-Xi[2])*Xi[3]
+    res[11,2] = res[11,2] + (1-Xi[1])*(1-Xi[2])*Xi[3]
+    
+    res[12,1] = res[12,1] + Xi[1]*Xi[2]*(1-Xi[3])
+    res[12,2] = res[12,2] + (1-Xi[1])*Xi[2]*(1-Xi[3])
+    
+    res[13,1] = res[13,1] + Xi[1]*(1-Xi[2])*(1-Xi[3])
+    res[13,2] = res[13,2] + (1-Xi[1])*(1-Xi[2])*(1-Xi[3])
+  }
+  
+  p = c(rep(0,13))
+  
+  for(i in 1:13)
+  {
+    p[i] = res[i,1] / (res[i,1] + res[i,2])
+  }
+  
+  return(p)
+}
 
-
-
-
-
-
+notesReussiteInt = as.data.frame((marks >= 45) * 1)
+p = maxVraisemblance(notesReussiteInt)
+print(p)
 
 # 4)
 bn.fit(dagNotes, data = notesReussite)
