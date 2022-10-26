@@ -27,7 +27,7 @@ On peut aussi visualiser la SRB associée :
 ```{r, fig.height=3.5, fig.width=10}
 graphviz.plot(dagNotes, highlight = vStructs, layout = "fdp", main = "Interdépendances des sujets")
 ```
-On peut maintenant construire la matrice *notesReussite* et il est important de noter la transformation en facteur de chacune de ses colonnes. En effet, cela est nécessaire pour l'exécution de la fonction *bn.fit* ultérieurement.
+On peut maintenant construire la matrice *notesReussite* : il est important de noter la transformation en facteur de chacune de ses colonnes. En effet, cela est nécessaire pour l'exécution de la fonction *bn.fit* ultérieurement.
 ```{r}
 notesReussite = as.data.frame((marks >= 45) * 1)
 notesReussite[notesReussite == 1] = "R"
@@ -91,7 +91,7 @@ f3 = function(x, y, z, p4, p5, p6, p7)
   
   if(((x == 0) || (x == 1)) && ((y == 0) || (y == 1)) && ((z == 0) || (z == 1)))
   {
-    tmp1 = f1(x, p4)^(y*Z) * f1(x, p5)^((1 - y)*z)
+    tmp1 = f1(x, p4)^(y*z) * f1(x, p5)^((1 - y)*z)
     tmp2 = f1(x, p6)^((1 - z)*y) * f1(x, p7)^((1 - y)*(1 - z))
     a = tmp1 * tmp2
   }
@@ -150,54 +150,54 @@ $\begin{cases}
 Pour trouver $p*$, il faut calculer le gradient de l'équation (1) par rapport au vecteur de paramètres $p = (p_1,\dots, p_{13})$ et voir quand est-ce qu'il s'annule. Pour simplifier le calcul de toutes les dérivées partielles, soit la fonction $L' = \sum_{i = 1}^n \ln (f_1) + \sum_{i = 1}^n \ln (f_2) + \sum_{i = 1}^n \ln (f_3) + \sum_{i = 1}^n \ln (f_4) + \sum_{i = 1}^n \ln (f_5)$ et on peut remarquer que $\forall j \in \{1\dots13\}$, la dérivée partielle de $L'$ par rapport au paramètre $p_j$ peut s'écrire :
 \begin{fleqn}
 \begin{align}
-\pdv{L'}{p_j} &= \pdv{(\sum_{i = 1}^n [a_{ij} \ln (p_j) + b_{ij} \ln (1-p_j)])}{p_j} \\
-&= \sum_{i = 1}^n \frac{a_{ij}}{p_j} - \sum_{i = 1}^n \frac{b_{ij}}{1-p_j}
+\pdv{L'}{p_j} &= \pdv{(\sum_{i = 1}^n [a_{ik} \ln (p_j) + b_{ik} \ln (1-p_j)])}{p_j} \\
+&= \sum_{i = 1}^n \frac{a_{ik}}{p_j} - \sum_{i = 1}^n \frac{b_{ik}}{1-p_j}
 \end{align}
 \end{fleqn}
-où $a_{ij}$ et $b_{ij}$ sont des entiers dépendants uniquement des paramètres $(x_{i1},\dots, x_{i5})$ provenant de la fonction $f_j$. En effet, nous arrivons à cette expression car $L'$ s'écrit comme une somme de différentes sommes de fonctions $\ln(f_j)$ pour $\forall j \in \{1\dots5\}$. Bien plus, comme nous l'avons vu, $\forall j \in \{1\dots5\}$ la somme suivante $\sum_{i = 1}^n \ln(f_j)$ s'exprime aussi comme une somme de différentes expressions $\sum_{i = 1}^n [a_{ij} \ln (p_j) + b_{ij} \ln (1-p_j)]$ où les $p_j$ sont les paramètres de la fonction $f_j$ et $a_{ij}$, $b_{ij}$ sont des variables dépendantes uniquements des paramètres $(x_{i1},\dots, x_{i5})$ de $f_j$. Par conséquent, en prenant en compte les règles de dérivation de la somme, la dérivée partielle de $L'$ par rapport au paramètre $p_j$ est de la forme de l'équation (3). Essayons maintenant de montrer quand est-ce l'équation (3) s'annule :
+où $a_{ik}$ et $b_{ik}$ sont des entiers dépendants uniquement des paramètres $(x_{i1},\dots, x_{i5})$ provenant de la fonction $f_k$ et d'où $p_j$ est aussi l'un des paramètres. En effet, nous arrivons à cette expression car $L'$ s'écrit comme une somme de différentes sommes de fonctions $\ln(f_k)$ pour $\forall k \in \{1\dots5\}$. Bien plus, comme nous l'avons vu, $\forall k \in \{1\dots5\}$ la somme suivante $\sum_{i = 1}^n \ln(f_k)$ s'exprime aussi comme une somme de différentes expressions $\sum_{i = 1}^n [a_{ik} \ln (p_j) + b_{ik} \ln (1-p_j)]$ où les $p_j$ sont les paramètres de la fonction $f_k$ et $a_{ik}$, $b_{ik}$ sont des variables dépendantes uniquements des paramètres $(x_{i1},\dots, x_{i5})$ de $f_k$. Par conséquent, en prenant en compte les règles de dérivation de la somme, la dérivée partielle de $L'$ par rapport au paramètre $p_j$ est de la forme de l'équation (3). Essayons maintenant de montrer quand est-ce l'équation (3) s'annule :
 \begin{fleqn}
 \begin{align*}
-\sum_{i = 1}^n \frac{a_{ij}}{p_j} - \sum_{i = 1}^n \frac{b_{ij}}{1-p_j} &= 0 \\
-\sum_{i = 1}^n \frac{a_{ij}}{p_j} &= \sum_{i = 1}^n \frac{b_{ij}}{1-p_j} \\
-\frac{1-p_j}{p_j} \sum_{i = 1}^n a_{ij} &= \sum_{i = 1}^n b_{ij} \\
-\frac{1-p_j}{p_j} &= \frac{\sum_{i = 1}^n b_{ij}}{\sum_{i = 1}^n a_{ij}} \\
-\frac{1}{p_j} &= \frac{\sum_{i = 1}^n b_{ij}}{\sum_{i = 1}^n a_{ij}} + 1 \\
-p_j &= \frac{\sum_{i = 1}^n a_{ij}}{\sum_{i = 1}^n a_{ij} + \sum_{i = 1}^n b_{ij}} \\
+\sum_{i = 1}^n \frac{a_{ik}}{p_j} - \sum_{i = 1}^n \frac{b_{ik}}{1-p_j} &= 0 \\
+\sum_{i = 1}^n \frac{a_{ik}}{p_j} &= \sum_{i = 1}^n \frac{b_{ik}}{1-p_j} \\
+\frac{1-p_j}{p_j} \sum_{i = 1}^n a_{ik} &= \sum_{i = 1}^n b_{ik} \\
+\frac{1-p_j}{p_j} &= \frac{\sum_{i = 1}^n b_{ik}}{\sum_{i = 1}^n a_{ik}} \\
+\frac{1}{p_j} &= \frac{\sum_{i = 1}^n b_{ik}}{\sum_{i = 1}^n a_{ik}} + 1 \\
+p_j &= \frac{\sum_{i = 1}^n a_{ik}}{\sum_{i = 1}^n a_{ik} + \sum_{i = 1}^n b_{ik}} \\
 \end{align*}
 \end{fleqn}
 Pour achever la démonstration, il faut montrer que les points trouvés $(p_1,\dots, p_{13})$ donnent bien le minimum de la fonction $L(X_i,p)$. Pour cela, on peut calculer la hessienne de la fonction $L(X_i,p)$ et montrer qu'elle est définie positive aux points $p_j$ trouvés. Tout d'abord, calculons la dérivée partielle seconde par rapport à $p_j$ :
 \begin{fleqn}
 \begin{align}
-\pdv{L'}{p_j,p_j} &= - \sum_{i = 1}^n \frac{a_{ij}}{p_j^2} - \sum_{i = 1}^n \frac{b_{ij}}{(1-p_j)^2}
+\pdv{L'}{p_j,p_j} &= - \sum_{i = 1}^n \frac{a_{ik}}{p_j^2} - \sum_{i = 1}^n \frac{b_{ik}}{(1-p_j)^2}
 \end{align}
 \end{fleqn}
-Notons tout d'abord que $\forall p_j \in \{p_1,\dots, p_{13}\}$ on a $\pdv{L'}{p_j,p_j} < 0$ (ce qui est évident). Maintenant, montrons que l'équation (4) est strictement supérieure à 0 en tout point $p_j = \frac{\sum_{i = 1}^n a_{ij}}{\sum_{i = 1}^n a_{ij} + \sum_{i = 1}^n b_{ij}}$ :
+Notons tout d'abord que $\forall p_j \in \{p_1,\dots, p_{13}\}$ on a $\pdv{L'}{p_j,p_j} < 0$ (ce qui est évident). Maintenant, montrons que l'équation (4) est strictement supérieure à 0 en tout point $p_j = \frac{\sum_{i = 1}^n a_{ik}}{\sum_{i = 1}^n a_{ik} + \sum_{i = 1}^n b_{ik}}$ :
 \begin{fleqn}
 \begin{align*}
-- \sum_{i = 1}^n \frac{a_{ij}}{p_j^2} - \sum_{i = 1}^n \frac{b_{ij}}{(1-p_j)^2} <& 0 \\
-- \sum_{i = 1}^n \frac{a_{ij}}{p_j^2} <& \sum_{i = 1}^n \frac{b_{ij}}{(1-p_j)^2} \\
-- \frac{(1-p_j)^2}{p_j^2} <& \frac{\sum_{i = 1}^n b_{ij}}{\sum_{i = 1}^n a_{ij}} \\
-\frac{-p_j^2 + 2p_j - 1}{p_j^2} <& \frac{\sum_{i = 1}^n b_{ij}}{\sum_{i = 1}^n a_{ij}} \\
--p_j + 2 - \frac{1}{p_j} <& p_j \times \frac{\sum_{i = 1}^n b_{ij}}{\sum_{i = 1}^n a_{ij}} \\
--2 \times \frac{\sum_{i = 1}^n b_{ij}}{\sum_{i = 1}^n a_{ij}} <& (\frac{\sum_{i = 1}^n b_{ij}}{\sum_{i = 1}^n a_{ij}})^2 + \frac{\sum_{i = 1}^n b_{ij}}{\sum_{i = 1}^n a_{ij}} \\
-(\frac{\sum_{i = 1}^n b_{ij}}{\sum_{i = 1}^n a_{ij}})^2 + 3 \times \frac{\sum_{i = 1}^n b_{ij}}{\sum_{i = 1}^n a_{ij}} &> 0
+- \sum_{i = 1}^n \frac{a_{ik}}{p_j^2} - \sum_{i = 1}^n \frac{b_{ik}}{(1-p_j)^2} <& 0 \\
+- \sum_{i = 1}^n \frac{a_{ik}}{p_j^2} <& \sum_{i = 1}^n \frac{b_{ik}}{(1-p_j)^2} \\
+- \frac{(1-p_j)^2}{p_j^2} <& \frac{\sum_{i = 1}^n b_{ik}}{\sum_{i = 1}^n a_{ik}} \\
+\frac{-p_j^2 + 2p_j - 1}{p_j^2} <& \frac{\sum_{i = 1}^n b_{ik}}{\sum_{i = 1}^n a_{ik}} \\
+-p_j + 2 - \frac{1}{p_j} <& p_j \times \frac{\sum_{i = 1}^n b_{ik}}{\sum_{i = 1}^n a_{ik}} \\
+-2 \times \frac{\sum_{i = 1}^n b_{ik}}{\sum_{i = 1}^n a_{ik}} <& (\frac{\sum_{i = 1}^n b_{ik}}{\sum_{i = 1}^n a_{ik}})^2 + \frac{\sum_{i = 1}^n b_{ik}}{\sum_{i = 1}^n a_{ik}} \\
+(\frac{\sum_{i = 1}^n b_{ik}}{\sum_{i = 1}^n a_{ik}})^2 + 3 \times \frac{\sum_{i = 1}^n b_{ik}}{\sum_{i = 1}^n a_{ik}} &> 0
 \end{align*}
 \end{fleqn}
 Nous pouvons maintenant conclure : en effet, la matrice hessienne de la fonction $L(X_i,p)$ est de la forme suivante : \newline
-$H(L(X_i,p))(p1 \dots p_{13}) = \begin{bmatrix} 
-    \pdv{L'}{p_1,p_1}(p1) & 0 & \dots & 0 \\
-    0 & \pdv{L'}{p_2,p_2}(p2) & \dots & 0 \\
+$H(L(X_i,p))(p_1 \dots p_{13}) = \begin{bmatrix} 
+    \pdv{L'}{p_1,p_1}(p_1) & 0 & \dots & 0 \\
+    0 & \pdv{L'}{p_2,p_2}(p_2) & \dots & 0 \\
     \vdots & \vdots & \ddots & \vdots \\
-    0 &  0 & \dots & \pdv{L'}{p_13,p_13}(p13) 
+    0 &  0 & \dots & \pdv{L'}{p_{13},p_{13}}(p_{13}) 
     \end{bmatrix}$
 
-$H(L(X_i,p))(p1 \dots p_{13})$ est une matrice diagonale et ses valeurs propres sont donc ceux de sa diagonale. Or, sa diagonale contient que des valeurs strictement positives car on a démontré que pour $\forall p_j \in \{p_1,\dots, p_{13}\}$ on a $\pdv{L'}{p_j,p_j}(pj) > 0$. Ainsi, ses valeurs propres sont aussi strictement positives et $H(L(X_i,p))(p1 \dots p_{13})$ est donc définie positivement. Par conséquent, les points trouvés $(p_1,\dots, p_{13})$ à l'aide de la formule $p_j = \frac{\sum_{i = 1}^n a_{ij}}{\sum_{i = 1}^n a_{ij} + \sum_{i = 1}^n b_{ij}}$ fournissent bien le minimum de la fonction $L(X_i,p)$.
+$H(L(X_i,p))(p_1 \dots p_{13})$ est une matrice diagonale et ses valeurs propres sont donc ceux de sa diagonale. Or, sa diagonale contient que des valeurs strictement positives car on a démontré que pour $\forall p_j \in \{p_1,\dots, p_{13}\}$ on a $\pdv{L'}{p_j,p_j}(pj) > 0$. Ainsi, ses valeurs propres sont aussi strictement positives et $H(L(X_i,p))(p_1 \dots p_{13})$ est donc définie positivement. Par conséquent, les points trouvés $(p_1,\dots, p_{13})$ à l'aide de la formule $p_j = \frac{\sum_{i = 1}^n a_{ik}}{\sum_{i = 1}^n a_{ik} + \sum_{i = 1}^n b_{ik}}$ fournissent bien le minimum de la fonction $L(X_i,p)$.
 \newline
 \newline
 Pour estimer le vecteur de paramètres $p = (p_1,\dots, p_{13})$ à l'aide de la matrice *notesReussite*, nous allons passer par deux étapes : \newline
 \begin{itemize}
-\item la première c'est de déterminer pour chaque $p_j$ ses sommes $\sum_{i = 1}^n a_{ij}$ et $\sum_{i = 1}^n b_{ij}$ à l'aide de la matrice \textit{notesReussite}.
-\item lorsqu'on a obtenu la valeur de ces deux sommes, on peut appliquer la formule trouvée auparavant à l'aide du maximum de vraisemblance (i.e $p_j = \frac{\sum_{i = 1}^n a_{ij}}{\sum_{i = 1}^n a_{ij} + \sum_{i = 1}^n b_{ij}}$) afin d'estimer au mieux $p_j$.
+\item la première c'est de déterminer pour chaque $p_j$ ses sommes $\sum_{i = 1}^n a_{ik}$ et $\sum_{i = 1}^n b_{ik}$ à l'aide de la matrice \textit{notesReussite}.
+\item lorsqu'on a obtenu la valeur de ces deux sommes, on peut appliquer la formule trouvée auparavant à l'aide du maximum de vraisemblance (i.e $p_j = \frac{\sum_{i = 1}^n a_{ik}}{\sum_{i = 1}^n a_{ik} + \sum_{i = 1}^n b_{ik}}$) afin d'estimer au mieux $p_j$.
 \end{itemize}
 \newpage
 Voici maintenant l'implémentation de la solution analytique sous R :
@@ -207,7 +207,7 @@ maxVraisemblance = function(notesReussite)
   n = nrow(notesReussite)
   res = matrix(0, nrow = 13, ncol = 2)
   
-  # compute sum(aij) and sum(bij)
+  # compute sum(aik) and sum(bik) for each pj
   for(i in 1:n)
   {
     Xi = unlist(notesReussite[i,], use.names = FALSE)
@@ -277,10 +277,4 @@ p_{13} = \mathbb{P}(X_{i1} = 1 | X_{i2} = 0, X_{i3} = 0) = 0.1333333 \end{cases}
 ```{r}
 bn.fit(dagNotes, data = notesReussite)
 ```
-
-
-
-
-
-
-
+On remarque que nous obtenons les mêmes résultats qu'à la section 4) (voir les annotations au niveau de l'output de la faction *bn.fit*).
